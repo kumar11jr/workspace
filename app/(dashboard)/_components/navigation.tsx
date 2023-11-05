@@ -2,9 +2,9 @@
 import { cn } from "@/lib/utils";
 import { ChevronsLeft, MenuIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { ElementRef, useRef, useState } from "react";
+import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
-
+import UserItem from "./user-Item";
 
 export const Navigation = () => {
   const pathname = usePathname();
@@ -14,6 +14,21 @@ export const Navigation = () => {
   const navbarRef = useRef<ElementRef<"div">>(null);
   const [isResset, setisResset] = useState(false);
   const [isCollapsed, setisCollapsed] = useState(isMobile);
+
+
+  useEffect(()=>{
+    if(isMobile){
+      collapse();
+    }else{
+      resetWidth();
+    }
+  },[isMobile])
+
+  useEffect(()=>{
+    if(isMobile){
+      collapse()
+    }
+  },[pathname,isMobile])
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
@@ -95,7 +110,7 @@ export const Navigation = () => {
           <ChevronsLeft className="h-5 w-5" />
         </div>
         <div>
-          <p>Action Items</p>
+          <UserItem />
         </div>
         <div className="mt-5">
           <p>Documents</p>
@@ -115,7 +130,7 @@ export const Navigation = () => {
         )}
       >
         <nav className="bg-transparent px-3 py-2 w-full">
-          {isCollapsed && <MenuIcon role="button" className="h-5 w-5" />}
+          {isCollapsed && <MenuIcon onClick={resetWidth} role="button" className="h-5 w-5" />}
         </nav>
       </div>
     </>

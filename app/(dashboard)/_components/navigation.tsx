@@ -1,12 +1,17 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { ChevronsLeft, MenuIcon } from "lucide-react";
+import { ChevronsLeft, MenuIcon, PlusCircle } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import UserItem from "./user-Item";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Item } from "./item";
+import { toast } from "sonner";
 
 export const Navigation = () => {
+  const create = useMutation(api.document.create);
   const pathname = usePathname();
   const isMobile = useMediaQuery("(max-width:768px");
   const isResizingRef = useRef(false);
@@ -14,6 +19,19 @@ export const Navigation = () => {
   const navbarRef = useRef<ElementRef<"div">>(null);
   const [isResset, setisResset] = useState(false);
   const [isCollapsed, setisCollapsed] = useState(isMobile);
+  const documents = useQuery(api.document.get)
+
+
+
+  const onCreate=()=>{
+    const promise = create({title:"Untitled"})
+    toast.promise(promise,{
+      loading:"Creating a new note...",
+      success:"New Note created",
+      error:"Failed to create a new note."
+    });
+  };
+
 
 
   useEffect(()=>{
@@ -111,9 +129,12 @@ export const Navigation = () => {
         </div>
         <div>
           <UserItem />
+          <Item onClick={onCreate} icon={PlusCircle} label="New Note" />
         </div>
         <div className="mt-5">
-          <p>Documents</p>
+          {documents?.map((document)=>(
+            <p key={document._id}> {document.title}</p>
+          ))}
         </div>
         <div
           onMouseDown={handleMouseDown}

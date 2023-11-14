@@ -1,3 +1,4 @@
+import { Toaster } from 'sonner'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
@@ -35,6 +36,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ConvexClientProvider>
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange storageKey='my-theme'>
+          <Toaster position='bottom-right' />
           {children}
         </ThemeProvider>
         </ConvexClientProvider>

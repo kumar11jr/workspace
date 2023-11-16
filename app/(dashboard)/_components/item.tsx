@@ -1,3 +1,4 @@
+import { Skeleton } from '@/components/ui/skeleton';
 import { Id } from '@/convex/_generated/dataModel';
 import { cn } from '@/lib/utils';
 import { ChevronDown, LucideIcon, ChevronRight } from 'lucide-react';
@@ -47,10 +48,25 @@ export const Item = ({ label, onClick, icon: Icon,id,active,documentIcon,isSearc
       )}
        <span>{label}</span>
        {isSearch && (
-        <kbd>
-          <span></span>
+        <kbd className='ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100'>
+          <span className='text-xs'>CTRL</span>k
         </kbd>
        )}
     </div>
   );
 };
+
+
+Item.Skeleton = function ItemSkeleton({ level }: { level?: number }) {
+  return (
+    <div
+      style={{
+        paddingLeft: level ? `${(level * 12) + 25}px` : "12px"
+      }}
+      className="flex gap-x-2 py-[3px]"
+    >
+      <Skeleton className="h-4 w-4" />
+      <Skeleton className="h-4 w-[30%]" />
+    </div>
+  )
+}

@@ -9,9 +9,10 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Item } from "./item";
 import { toast } from "sonner";
+import { DocumentList } from "./documentlist";
 
 export const Navigation = () => {
-  const create = useMutation(api.document.create);
+  
   const pathname = usePathname();
   const isMobile = useMediaQuery("(max-width:768px");
   const isResizingRef = useRef(false);
@@ -19,17 +20,16 @@ export const Navigation = () => {
   const navbarRef = useRef<ElementRef<"div">>(null);
   const [isResset, setisResset] = useState(false);
   const [isCollapsed, setisCollapsed] = useState(isMobile);
-  const documents = useQuery(api.document.get)
 
 
 
   const onCreate=()=>{
-    const promise = create({title:"Untitled"})
-    toast.promise(promise,{
-      loading:"Creating a new note...",
-      success:"New Note created",
-      error:"Failed to create a new note."
-    });
+    // const promise = create({title:"Untitled"})
+    // toast.promise(promise,{
+    //   loading:"Creating a new note...",
+    //   success:"New Note created",
+    //   error:"Failed to create a new note."
+    // });
   };
 
 
@@ -130,14 +130,12 @@ export const Navigation = () => {
         <div>
           <UserItem />
           <Item onClick={onCreate} icon={PlusCircle} label="New Note" />
-          <Item onClick={onCreate} icon={Settings} label="Settings" />
-          <Item onClick={onCreate} icon={Search} label="Search" />
+          <Item onClick={()=>{}} icon={Settings} label="Settings" />
+          <Item onClick={()=>{}} icon={Search} label="Search" isSearch />
 
         </div>
         <div className="mt-5">
-          {documents?.map((document)=>(
-            <p key={document._id}> {document.title}</p>
-          ))}
+          <DocumentList />
         </div>
         <div
           onMouseDown={handleMouseDown}

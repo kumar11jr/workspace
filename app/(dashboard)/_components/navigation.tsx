@@ -11,8 +11,9 @@ import { Item } from "./item";
 import { toast } from "sonner";
 import { DocumentList } from "./documentlist";
 
+
 export const Navigation = () => {
-  
+  const create = useMutation(api.document.create);
   const pathname = usePathname();
   const isMobile = useMediaQuery("(max-width:768px");
   const isResizingRef = useRef(false);
@@ -24,12 +25,12 @@ export const Navigation = () => {
 
 
   const onCreate=()=>{
-    // const promise = create({title:"Untitled"})
-    // toast.promise(promise,{
-    //   loading:"Creating a new note...",
-    //   success:"New Note created",
-    //   error:"Failed to create a new note."
-    // });
+    const promise = create({title:"Untitled"})
+    toast.promise(promise,{
+      loading:"Creating a new note...",
+      success:"New Note created",
+      error:"Failed to create a new note."
+    });
   };
 
 
@@ -135,6 +136,7 @@ export const Navigation = () => {
 
         </div>
         <div className="mt-5">
+          
           <DocumentList />
         </div>
         <div

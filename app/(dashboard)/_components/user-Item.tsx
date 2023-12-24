@@ -3,10 +3,7 @@
 import { ChevronsLeftRight } from "lucide-react";
 import { useUser, SignOutButton } from "@clerk/clerk-react";
 
-import {
-  Avatar,
-  AvatarImage
-} from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,13 +13,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export default function UserItem(){
+export default function UserItem() {
   const { user } = useUser();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div role="button" className="flex items-center text-sm p-3 w-full hover:bg-primary/5">
+        <div
+          role="button"
+          className="flex items-center text-sm p-3 w-full hover:bg-primary/5"
+        >
           <div className="gap-x-2 flex items-center max-w-[150px]">
             <Avatar className="h-5 w-5">
               <AvatarImage src={user?.imageUrl} />
@@ -45,7 +45,7 @@ export default function UserItem(){
             {user?.emailAddresses[0].emailAddress}
           </p>
           <div className="flex items-center gap-x-2">
-            <div className="rounded-md bg-secondary p-1"> 
+            <div className="rounded-md bg-secondary p-1">
               <Avatar className="h-8 w-8">
                 <AvatarImage src={user?.imageUrl} />
               </Avatar>
@@ -59,11 +59,9 @@ export default function UserItem(){
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="w-full cursor-pointer">
-          <SignOutButton>
-            Log Out
-          </SignOutButton>
+          <SignOutButton>Log Out</SignOutButton>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

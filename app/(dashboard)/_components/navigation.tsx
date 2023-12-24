@@ -1,6 +1,12 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { ChevronsLeft, MenuIcon, PlusCircle, Search, Settings } from "lucide-react";
+import {
+  ChevronsLeft,
+  MenuIcon,
+  PlusCircle,
+  Search,
+  Settings,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
@@ -10,7 +16,6 @@ import { api } from "@/convex/_generated/api";
 import { Item } from "./item";
 import { toast } from "sonner";
 import { DocumentList } from "./documentlist";
-
 
 export const Navigation = () => {
   const create = useMutation(api.document.create);
@@ -22,32 +27,28 @@ export const Navigation = () => {
   const [isResset, setisResset] = useState(false);
   const [isCollapsed, setisCollapsed] = useState(isMobile);
 
-
-
-  const onCreate=()=>{
-    const promise = create({title:"Untitled"})
-    toast.promise(promise,{
-      loading:"Creating a new note...",
-      success:"New Note created",
-      error:"Failed to create a new note."
+  const onCreate = () => {
+    const promise = create({ title: "Untitled" });
+    toast.promise(promise, {
+      loading: "Creating a new note...",
+      success: "New Note created",
+      error: "Failed to create a new note.",
     });
   };
 
-
-
-  useEffect(()=>{
-    if(isMobile){
+  useEffect(() => {
+    if (isMobile) {
       collapse();
-    }else{
+    } else {
       resetWidth();
     }
-  },[isMobile])
+  }, [isMobile]);
 
-  useEffect(()=>{
-    if(isMobile){
-      collapse()
+  useEffect(() => {
+    if (isMobile) {
+      collapse();
     }
-  },[pathname,isMobile])
+  }, [pathname, isMobile]);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
@@ -70,13 +71,11 @@ export const Navigation = () => {
     }
   };
 
-
   const handleMouseUp = () => {
     isResizingRef.current = false;
     document.removeEventListener("mousemove", handleMouseMove);
     document.removeEventListener("mouseup", handleMouseUp);
   };
-
 
   const resetWidth = () => {
     if (sidebarRef.current && navbarRef.current) {
@@ -95,7 +94,6 @@ export const Navigation = () => {
     }
   };
 
-  
   const collapse = () => {
     if (sidebarRef.current && navbarRef.current) {
       setisCollapsed(true);
@@ -131,12 +129,10 @@ export const Navigation = () => {
         <div>
           <UserItem />
           <Item onClick={onCreate} icon={PlusCircle} label="New Note" />
-          <Item onClick={()=>{}} icon={Settings} label="Settings" />
-          <Item onClick={()=>{}} icon={Search} label="Search" isSearch />
-
+          <Item onClick={() => {}} icon={Settings} label="Settings" />
+          <Item onClick={() => {}} icon={Search} label="Search" isSearch />
         </div>
         <div className="mt-5">
-          
           <DocumentList />
         </div>
         <div
@@ -154,7 +150,9 @@ export const Navigation = () => {
         )}
       >
         <nav className="bg-transparent px-3 py-2 w-full">
-          {isCollapsed && <MenuIcon onClick={resetWidth} role="button" className="h-5 w-5" />}
+          {isCollapsed && (
+            <MenuIcon onClick={resetWidth} role="button" className="h-5 w-5" />
+          )}
         </nav>
       </div>
     </>

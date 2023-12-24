@@ -19,21 +19,21 @@ interface DocumentListProps {
 
 export const DocumentList = ({
   parentDocumentId,
-  level = 0
+  level = 0,
 }: DocumentListProps) => {
   const params = useParams();
   const router = useRouter();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   const onExpand = (documentId: string) => {
-    setExpanded(prevExpanded => ({
+    setExpanded((prevExpanded) => ({
       ...prevExpanded,
-      [documentId]: !prevExpanded[documentId]
+      [documentId]: !prevExpanded[documentId],
     }));
   };
 
   const documents = useQuery(api.document.getSidebar, {
-    parentDocument: parentDocumentId
+    parentDocument: parentDocumentId,
   });
 
   const onRedirect = (documentId: string) => {
@@ -52,13 +52,13 @@ export const DocumentList = ({
         )}
       </>
     );
-  };
+  }
 
   return (
     <>
       <p
         style={{
-          paddingLeft: level ? `${(level * 12) + 25}px` : undefined
+          paddingLeft: level ? `${level * 12 + 25}px` : undefined,
         }}
         className={cn(
           "hidden text-sm font-medium text-muted-foreground/80",
@@ -82,10 +82,7 @@ export const DocumentList = ({
             expanded={expanded[document._id]}
           />
           {expanded[document._id] && (
-            <DocumentList
-              parentDocumentId={document._id}
-              level={level + 1}
-            />
+            <DocumentList parentDocumentId={document._id} level={level + 1} />
           )}
         </div>
       ))}

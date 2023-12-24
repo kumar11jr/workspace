@@ -47,3 +47,28 @@ export const create = mutation({
     return document;
   },
 });
+
+
+export const remove = mutation({
+  args:{id:v.id('documents')},
+  handler:async(ctx,args)=>{
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity){
+      throw new Error("Authentication Required")
+    }
+
+    const userId = identity.subject
+
+    const existingDocument = await ctx.db.get(args.id)
+
+    if(!existingDocument){
+      throw new Error("Not Found")
+    }
+
+    if (existingDocument.userId !== userId){
+      throw new Error("Unauthorised User")
+    }
+
+    const document = await ctx.db.delete(args.id)
+  }
+})

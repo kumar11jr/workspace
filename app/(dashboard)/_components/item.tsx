@@ -1,7 +1,12 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { cn } from "@/lib/utils";
-import { ChevronDown, LucideIcon, ChevronRight } from "lucide-react";
+import { useMutation } from "convex/react";
+import { ChevronDown, LucideIcon, ChevronRight, Plus, Trash } from "lucide-react";
+import { useRouter } from "next/router";
+import { eventNames } from "process";
+import { toast } from "sonner";
 
 interface ItemProps {
   label: string;
@@ -28,6 +33,45 @@ export const Item = ({
   onExpand,
   expanded,
 }: ItemProps) => {
+
+  // const router = useRouter()
+  const create = useMutation(api.document.create)
+  const remove = useMutation(api.document.remove)
+
+  const handleExpand = (event:React.MouseEvent<HTMLDivElement,MouseEvent>) => {
+    event.stopPropagation()
+    onExpand?.()
+  }
+
+
+  const onCreate = (event:React.MouseEvent<HTMLDivElement,MouseEvent>) =>{
+    event.stopPropagation()
+    if (!id) return
+    const promise = create({title:"Untitled",parentDocument:id}).then((documentId)=>{
+      if (!expanded) {
+        onExpand?.()
+      }
+      // router.push(`/document/${documentId}`)
+    })
+    toast.promise(promise,{
+      loading:"Creating a new Note...",
+      success:"New note created",
+      error:"Failed to create a new note"
+    })
+  }
+
+  const onDelete = (event:React.MouseEvent<HTMLDivElement,MouseEvent>) => {
+    event.stopPropagation();
+    if(!id) return;
+    const promise = remove({id});
+    toast.promise(promise,{
+      loading:"Deleting Note...",
+      success:"Deleted Successfully",
+      error:"Failed to delete"
+    })
+  }
+
+
   const ChevronIcon = expanded ? ChevronDown : ChevronRight;
 
   return (
@@ -45,7 +89,7 @@ export const Item = ({
       {!!id && (
         <div
           role="button"
-          onClick={() => {}}
+          onClick={handleExpand}
           className="h-full rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 mr-1"
         >
           <ChevronIcon className="h-4 w-4 shrink-0 text-muted-foreground/50" />
@@ -58,10 +102,21 @@ export const Item = ({
           <span className="text-xs">CTRL</span>k
         </kbd>
       )}
+
+      {!!id && (
+        <div className="ml-auto flex items-center gap-x-2">
+          <div role="button" onClick={onDelete} className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:bg-neutral-600">
+            <Trash className="h-4 w-4 text-muted-foreground"/>
+          </div>
+          <div role="button" onClick={onCreate} className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:bg-neutral-600">
+            <Plus className="h-4 w-4 text-muted-foreground" />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
-
+ 
 Item.Skeleton = function ItemSkeleton({ level }: { level?: number }) {
   return (
     <div

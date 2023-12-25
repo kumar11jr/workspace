@@ -1,3 +1,4 @@
+import { ConfirmModal } from "@/components/modal/confirm-delete";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -7,11 +8,12 @@ import { ChevronDown, LucideIcon, ChevronRight, Plus, Trash } from "lucide-react
 import { useRouter } from "next/router";
 import { eventNames } from "process";
 import { toast } from "sonner";
+import { DocumentList } from "./documentlist";
 
 interface ItemProps {
   label: string;
   onClick: () => void;
-  icon: React.ElementType; // LucideIcon type
+  icon: React.ElementType;
   id?: Id<"documents">;
   documentIcon?: string;
   active?: boolean;
@@ -60,16 +62,19 @@ export const Item = ({
     })
   }
 
-  const onDelete = (event:React.MouseEvent<HTMLDivElement,MouseEvent>) => {
-    event.stopPropagation();
-    if(!id) return;
-    const promise = remove({id});
-    toast.promise(promise,{
-      loading:"Deleting Note...",
-      success:"Deleted Successfully",
-      error:"Failed to delete"
-    })
-  }
+  const onDelete = (id: string | undefined) => {
+    // event.stopPropagation();
+
+    if (!id) return;
+
+    const promise = remove({ id });
+    toast.promise(promise, {
+        loading: "Deleting Note...",
+        success: "Deleted Successfully",
+        error: "Failed to delete"
+    });
+};
+
 
 
   const ChevronIcon = expanded ? ChevronDown : ChevronRight;
@@ -105,9 +110,11 @@ export const Item = ({
 
       {!!id && (
         <div className="ml-auto flex items-center gap-x-2">
-          <div role="button" onClick={onDelete} className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:bg-neutral-600">
+          <ConfirmModal onConfirm={()=>{onDelete(documents._id)}}>
+          <div role="button"  className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:bg-neutral-600">
             <Trash className="h-4 w-4 text-muted-foreground"/>
           </div>
+          </ConfirmModal>
           <div role="button" onClick={onCreate} className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:bg-neutral-600">
             <Plus className="h-4 w-4 text-muted-foreground" />
           </div>

@@ -8,7 +8,7 @@ import {
   Search,
   Settings,
 } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import UserItem from "./user-Item";
@@ -17,10 +17,12 @@ import { api } from "@/convex/_generated/api";
 import { Item } from "./item";
 import { toast } from "sonner";
 import { DocumentList } from "./documentlist";
+import { Navbar } from "./navbar";
 
 export const Navigation = () => {
   const create = useMutation(api.document.create);
   const pathname = usePathname();
+  const params = useParams()
   const isMobile = useMediaQuery("(max-width:768px");
   const isResizingRef = useRef(false);
   const sidebarRef = useRef<ElementRef<"aside">>(null);
@@ -151,11 +153,16 @@ export const Navigation = () => {
           isMobile && "left-0 w-full"
         )}
       >
-        <nav className="bg-transparent px-3 py-2 w-full">
+        {!!params.documentId ? (
+          <Navbar isCollapsed={isCollapsed} onresetwidth={resetWidth} />
+        ):(
+          <nav className="bg-transparent px-3 py-2 w-full">
           {isCollapsed && (
             <MenuIcon onClick={resetWidth} role="button" className="h-5 w-5" />
           )}
         </nav>
+        )}
+        
       </div>
     </>
   );

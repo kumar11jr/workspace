@@ -62,8 +62,8 @@ export const Item = ({
     })
   }
 
-  const onDelete = (id: string | undefined) => {
-    // event.stopPropagation();
+  const onDelete = (event:React.MouseEvent<HTMLDivElement,MouseEvent>) => {
+    event.stopPropagation();
 
     if (!id) return;
 
@@ -110,11 +110,11 @@ export const Item = ({
 
       {!!id && (
         <div className="ml-auto flex items-center gap-x-2">
-          <ConfirmModal onConfirm={()=>{onDelete(documents._id)}}>
-          <div role="button"  className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:bg-neutral-600">
+          {/* <ConfirmModal onConfirm={()=>{onDelete(documents._id)}}> */}
+          <div role="button" onClick={onDelete} className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:bg-neutral-600">
             <Trash className="h-4 w-4 text-muted-foreground"/>
           </div>
-          </ConfirmModal>
+          {/* </ConfirmModal> */}
           <div role="button" onClick={onCreate} className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:bg-neutral-600">
             <Plus className="h-4 w-4 text-muted-foreground" />
           </div>

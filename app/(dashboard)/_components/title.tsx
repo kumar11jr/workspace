@@ -1,5 +1,9 @@
 "use client" 
 
+
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
 import { api } from "@/convex/_generated/api"
 import { Doc } from "@/convex/_generated/dataModel"
 import { useMutation } from "convex/react"
@@ -28,7 +32,7 @@ export const Title =({initialData}:TitleProps)=>{
         setEditing(false)
     }
 
-    const onchange = (event:React.ChangeEvent<HTMLInputElement>) =>{
+    const onChange = (event:React.ChangeEvent<HTMLInputElement>) =>{
         setTitle(event.target.value)
         update({
             id:initialData._id,
@@ -36,10 +40,42 @@ export const Title =({initialData}:TitleProps)=>{
         });
     };
 
+    const onkeyDown = (
+        event:React.KeyboardEvent<HTMLInputElement>
+    )=>{
+        if(event.key === "Enter"){
+            disableInput()
+        }
+    }
+
 return(
     <div className="flex items-center gap-x-1">
         {!!initialData.icon && <p>{initialData.icon}</p>}
-        Navbar
+        {Editing ? (
+            <Input
+            ref={inputRef}
+            onClick={enableInput}
+            onBlur={disableInput}
+            onKeyDown={onkeyDown}
+            value={title}
+            onChange={onChange}
+            className="h-7 px-2 focus-visible:ring-transparent"/>
+        ):(
+            <Button
+            onClick={enableInput}
+            variant="ghost"
+            size="sm"
+            className="font-normal"
+            >
+                {initialData?.title}
+            </Button>
+        )}
     </div>
 )
+}
+
+Title.Skeleton = function TitleSkeleton(){
+    return(
+        <Skeleton className="h-9 w-17 rounded-md" />
+    )
 }

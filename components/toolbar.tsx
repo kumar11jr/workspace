@@ -1,6 +1,6 @@
 "use client";
 
-import { Doc } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 import { IconPicker } from "./icon-picker";
 import { Button } from "./ui/button";
 import { ImageIcon, Smile, X } from "lucide-react";
@@ -9,7 +9,20 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import TextareaAutosize from "react-textarea-autosize"
 import { removeIcon } from "@/convex/document";
-import { UseCoverImage } from "@/hooks/use-cover-image";
+import { useCoverImage } from "@/hooks/use-cover-image";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { SingleImageDropzone } from "./single-image-dropzone";
+import { useEdgeStore } from "@/lib/edgestore";
+import { useParams } from "next/navigation";
+
 
 interface ToolbarProps {
   initialData: Doc<"documents">;
@@ -23,7 +36,37 @@ export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
 
     const update = useMutation(api.document.update);
     const removeIcon = useMutation(api.document.removeIcon);
-    const coverImage = UseCoverImage();
+    const coverImage = useCoverImage();
+
+    const params = useParams()
+    const [file, setFile] = useState<File>()
+    const [isSubmitting, setisSubmitting] = useState(false)
+    const { edgestore } = useEdgeStore();
+
+    const onClose = ()=>{
+        setFile(undefined)
+        setisSubmitting(false)
+        coverImage.onClose()
+    }
+    
+
+    const onChange = async(file?:File) =>{
+        if(file){
+            setisSubmitting(true)
+            setFile(file)
+            const res = await edgestore.publicFiles.upload({
+                file
+            });
+
+            await update({
+                id:params.documentId as Id<"documents">,
+                coverImage: res.url
+            })
+
+            onClose()
+
+        }
+    }
 
     const enableInput = ()=>{
         if(preview) return;
@@ -111,6 +154,7 @@ export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
             size="sm"
           >
             <ImageIcon className="h-4 w-4 mr-2" />
+            Add Cover Image
           </Button>
         )}
       </div>
@@ -128,6 +172,24 @@ export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
           {initialData.title}
         </div>
       )}
+      
+
+      <div>
+        <Dialog open={coverImage.isOpen} onOpenChange={coverImage.onClose}>
+            <DialogContent>
+                <DialogHeader>
+                    <h2 className="text-center text-lg font-semibold">Cover Image</h2>
+                </DialogHeader>
+                <SingleImageDropzone
+                    className="w-full outline-none"
+                    disabled={isSubmitting}
+                    onChange={onChange}
+                    value={file}
+                />
+
+            </DialogContent>
+        </Dialog>
+      </div>
     </div>
   );
 };

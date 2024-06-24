@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/Providers/theme-provider'
 import { ConvexClientProvider } from '@/components/Providers/convex-provider'
+import { EdgeStoreProvider } from '../lib/edgestore';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -35,10 +36,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ConvexClientProvider>
+        <EdgeStoreProvider>
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange storageKey='my-theme'>
           <Toaster position='bottom-right' />
           {children}
         </ThemeProvider>
+        </EdgeStoreProvider>
         </ConvexClientProvider>
         </body>
     </html>

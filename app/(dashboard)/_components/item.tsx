@@ -5,7 +5,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import { cn } from "@/lib/utils";
 import { useMutation } from "convex/react";
 import { ChevronDown, LucideIcon, ChevronRight, Plus, Trash } from "lucide-react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { eventNames } from "process";
 import { toast } from "sonner";
 import { DocumentList } from "./documentlist";
@@ -36,7 +36,8 @@ export const Item = ({
   expanded,
 }: ItemProps) => {
 
-  // const router = useRouter()
+
+  const router = useRouter()
   const create = useMutation(api.document.create)
   const remove = useMutation(api.document.remove)
 
@@ -67,7 +68,10 @@ export const Item = ({
 
     if (!id) return;
 
-    const promise = remove({ id });
+    const promise = remove({ id })
+    .then(()=>{
+      router.push("/dash")
+    });
     toast.promise(promise, {
         loading: "Deleting Note...",
         success: "Deleted Successfully",

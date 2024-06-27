@@ -8,7 +8,7 @@ import {
   Search,
   Settings,
 } from "lucide-react";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import UserItem from "./user-Item";
@@ -22,6 +22,7 @@ import { Navbar } from "./navbar";
 export const Navigation = () => {
   const create = useMutation(api.document.create);
   const pathname = usePathname();
+  const router = useRouter();
   const params = useParams()
   const isMobile = useMediaQuery("(max-width:768px");
   const isResizingRef = useRef(false);
@@ -31,7 +32,11 @@ export const Navigation = () => {
   const [isCollapsed, setisCollapsed] = useState(isMobile);
 
   const onCreate = () => {
-    const promise = create({ title: "Untitled" });
+    const promise = create({ title: "Untitled" })
+    .then((documentId)=>{
+      router.push(`/dash/${documentId}`);
+    });
+  
     toast.promise(promise, {
       loading: "Creating a new note...",
       success: "New Note created",

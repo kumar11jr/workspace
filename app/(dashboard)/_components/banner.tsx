@@ -19,7 +19,9 @@ export const Banner =({
     const remove = useMutation(api.document.remove)
 
     const onRemove=()=>{
-        const promise = remove({id:documentId})
+        const promise = remove({id:documentId}).then(()=>{
+            router.push("/dash")
+        })
 
         toast.promise(promise,{
             loading:"Deleting Note...",

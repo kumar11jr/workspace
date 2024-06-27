@@ -27,7 +27,9 @@ export const Menu=({documentId}:MenuProps)=>{
     const remove = useMutation(api.document.remove)
 
     const OnRemove = ()=>{
-        const promise = remove({id:documentId})
+        const promise = remove({id:documentId}).then(()=>{
+            router.push("/dash")
+        })
 
         toast.promise(promise,{
             loading:"Moving to trash...",
